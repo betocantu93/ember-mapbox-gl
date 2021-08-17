@@ -1,5 +1,6 @@
 {{yield
   (hash
-    layer=(component 'mapbox-gl-layer' map=this.map _sourceId=this.sourceId longLived=this.longLived)
+    layer=(component 'mapbox-gl-layer' map=this.map sourceId=this.sourceId longLived=this.longLived)
+    terrain=(component 'mapbox-gl-terrain' map=this.map sourceId=this.sourceId)
   )
 }}

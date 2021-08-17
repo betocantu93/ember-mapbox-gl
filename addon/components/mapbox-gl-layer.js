@@ -69,10 +69,10 @@ export default Component.extend({
   before: null,
 
   /**
-   * @property _sourceId
+   * @property sourceId
    * @private for use by mapbox-gl-source to pass in its sourceId
    */
-  _sourceId: reads('layer.source'),
+  sourceId: reads('layer.source'),
 
   /**
    * @property _layerId
@@ -107,7 +107,7 @@ export default Component.extend({
     'layer',
     '_layerId',
     '_layerType',
-    '_sourceId',
+    'sourceId',
     '_layout',
     '_paint',
     function () {
@@ -115,7 +115,7 @@ export default Component.extend({
       return assign({}, this.layer, {
         id: this._layerId,
         type: this._layerType,
-        source: this._sourceId,
+        source: this.sourceId,
         layout: this._layout,
         paint: this._paint,
       });
