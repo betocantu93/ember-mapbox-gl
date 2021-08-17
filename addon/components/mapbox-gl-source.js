@@ -45,7 +45,7 @@ export default Component.extend({
   /**
    * @param boolean
    * @description Set to longLived so it is not destroyed along with its component
-  */
+   */
   longLived: false,
 
   /**
@@ -80,43 +80,36 @@ export default Component.extend({
   init() {
     this._super(...arguments);
 
-    assert('Need to pass idName if source is longLived', !this.longLived || this.idName);
+    assert(
+      'Need to pass idName if source is longLived',
+      !this.longLived || this.idName
+    );
 
     // Add source to map if it is not already present
-    const { sourceId, options } = this;
+    this.addOrUpdate(this.skipSetDataOnInit);
+  },
 
+  addOrUpdate(skipSetData = false) {
+    const { sourceId, options } = this;
     if (!this.map.getSource(sourceId)) {
       //window.console.log('add source to map');
-      if (options.type == 'geojson' && !options.data) {
+      if (options.type === 'geojson' && !options.data) {
         /*
           This allows you to send data as null without causing an error en first render.
           Subsecuent renders only unhide the layer, so if data is required by an
           if helper in the template, the layer won't be unhidden until the data has been loaded
         */
-        options.data = {'type': 'FeatureCollection', 'features': []};
+        options.data = { type: 'FeatureCollection', features: [] };
       }
       this.map.addSource(sourceId, options);
-    } else {
+    } else if (!skipSetData) {
       /*
         When a map is longLived, this allows setting a source's data on the
         init of subsecuent renders if the value is present. If the value is
         not present we should NOT set it so the map can rerender 'as it was'.
       */
-      if (!this.skipSetDataOnInit && options.data && options.data.features) {
+      if (options.data && options.data.features) {
         //window.console.log(`set data on init to source ${sourceId}`);
-        this.map.getSource(sourceId).setData(options.data);
-      }
-    }
-
-  },
-
-  didUpdateAttrs() {
-    this._super(...arguments);
-
-    const { sourceId, options } = this;
-
-    if (options) {
-      if (options.data) {
         this.map.getSource(sourceId).setData(options.data);
       } else if (options.coordinates) {
         // used for images and video https://www.mapbox.com/mapbox-gl-js/api#imagesource#setcoordinates
@@ -125,14 +118,24 @@ export default Component.extend({
     }
   },
 
+  didUpdateAttrs() {
+    this._super(...arguments);
+
+    this.addOrUpdate();
+  },
+
   willDestroy() {
     this._super(...arguments);
 
     if (!this.longLived) {
       //window.console.log('destroy source');
       // wait for any layers to be removed before removing the source
-      scheduleOnce('afterRender', this.map, this.map.removeSource, this.sourceId);
+      scheduleOnce(
+        'afterRender',
+        this.map,
+        this.map.removeSource,
+        this.sourceId
+      );
     }
-  }
-
+  },
 });
