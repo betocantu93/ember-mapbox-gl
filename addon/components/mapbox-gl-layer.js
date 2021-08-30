@@ -112,13 +112,18 @@ export default Component.extend({
     '_paint',
     function () {
       // do this to pick up other properties like filter, re, metadata, source-layer, minzoom, maxzoom, etc
-      return assign({}, this.layer, {
+      let layer = assign({}, this.layer, {
         id: this._layerId,
         type: this._layerType,
         source: this.sourceId,
         layout: this._layout,
         paint: this._paint,
       });
+      // Remove undefined keys
+      Object.keys(layer).forEach(
+        (key) => layer[key] === undefined && delete layer[key]
+      );
+      return layer;
     }
   ).readOnly(),
 
