@@ -138,15 +138,19 @@ export default Component.extend({
     if (this.map.getLayer(this._layerId)) {
       //window.console.log('unhide layer');
       this.map.setLayoutProperty(this._layerId, 'visibility', 'visible');
+      this.updateLayerProps();
     } else {
       //window.console.log('add layer');
-      this.map.addLayer(this._layer, this.before);
+      this.map.addLayer(_layer, before);
     }
   },
 
   didUpdateAttrs() {
     this._super(...arguments);
+    this.updateLayerProps();
+  },
 
+  updateLayerProps() {
     const { _layer } = this;
 
     for (const k in _layer.layout) {
@@ -161,7 +165,9 @@ export default Component.extend({
       this.map.setFilter(_layer.id, _layer.filter);
     }
 
-    this.map.setLayerZoomRange(_layer.id, _layer.minzoom, _layer.maxzoom);
+    if (_layer.minzoom || _layer.maxzoom) {
+      this.map.setLayerZoomRange(_layer.id, _layer.minzoom, _layer.maxzoom);
+    }
   },
 
   willDestroy() {
