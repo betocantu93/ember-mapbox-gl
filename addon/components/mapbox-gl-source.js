@@ -108,7 +108,7 @@ export default Component.extend({
         init of subsecuent renders if the value is present. If the value is
         not present we should NOT set it so the map can rerender 'as it was'.
       */
-      if (options.data && options.data.features) {
+      if (options.data) {
         //window.console.log(`set data on init to source ${sourceId}`);
         this.map.getSource(sourceId).setData(options.data);
       } else if (options.coordinates) {
