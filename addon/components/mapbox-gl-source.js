@@ -114,6 +114,9 @@ export default Component.extend({
       } else if (options.coordinates) {
         // used for images and video https://www.mapbox.com/mapbox-gl-js/api#imagesource#setcoordinates
         this.map.getSource(sourceId).setCoordinates(options.coordinates);
+      } else if (options.tiles) {
+        // For vector and raster types
+        this.map.getSource(sourceId).setTiles(options.tiles);
       }
     }
   },
