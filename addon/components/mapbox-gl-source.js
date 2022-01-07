@@ -95,7 +95,7 @@ export default Component.extend({
       //window.console.log('add source to map');
       if (options.type === 'geojson' && !options.data) {
         /*
-          This allows you to send data as null without causing an error en first render.
+          This allows you to send data as null without causing an error in first render.
           Subsecuent renders only unhide the layer, so if data is required by an
           if helper in the template, the layer won't be unhidden until the data has been loaded
         */
@@ -114,8 +114,8 @@ export default Component.extend({
       } else if (options.coordinates) {
         // used for images and video https://www.mapbox.com/mapbox-gl-js/api#imagesource#setcoordinates
         this.map.getSource(sourceId).setCoordinates(options.coordinates);
-      } else if (options.tiles) {
-        // For vector and raster types
+      } else if (options.type === 'vector') {
+        // For vector source type
         this.map.getSource(sourceId).setTiles(options.tiles);
       }
     }
@@ -124,14 +124,16 @@ export default Component.extend({
   didUpdateAttrs() {
     this._super(...arguments);
 
-    this.addOrUpdate();
+    // Raster sources can't update
+    if (this.options.type !== 'raster') {
+      this.addOrUpdate();
+    }
   },
 
   willDestroy() {
     this._super(...arguments);
 
     if (!this.longLived) {
-      //window.console.log('destroy source');
       // wait for any layers to be removed before removing the source
       scheduleOnce(
         'afterRender',
