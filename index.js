@@ -5,7 +5,7 @@ const MergeTrees = require('broccoli-merge-trees');
 const Path = require('path');
 
 module.exports = {
-  name: 'ember-mapbox-gl',
+  name: require('./package').name,
 
   isDevelopingAddon: function() {
       return false;

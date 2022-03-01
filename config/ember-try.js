@@ -1,143 +1,72 @@
 'use strict';
 
 const getChannelURL = require('ember-source-channel-url');
+const { embroiderSafe, embroiderOptimized } = require('@embroider/test-setup');
 
-module.exports = function() {
-  return Promise.all([
-    getChannelURL('release'),
-    getChannelURL('beta')
-  ]).then(([ releaseUrl, betaUrl ]) => {
-    return {
-      useYarn: true,
-
-      scenarios: [
-        {
-          name: 'ember-lts-2.12',
-          npm: {
-            devDependencies: {
-              'ember-source': '~2.12.0'
-            }
-          }
+module.exports = async function () {
+  return {
+    useYarn: true,
+    scenarios: [
+      {
+        name: 'ember-lts-3.24',
+        npm: {
+          devDependencies: {
+            'ember-source': '~3.24.3',
+          },
         },
-        {
-          name: 'ember-lts-2.16',
-          npm: {
-            devDependencies: {
-              'ember-source': '~2.16.0'
-            }
-          }
+      },
+      {
+        name: 'ember-lts-3.28',
+        npm: {
+          devDependencies: {
+            'ember-source': '~3.28.0',
+          },
         },
-        {
-          name: 'ember-lts-2.18',
-          npm: {
-            devDependencies: {
-              'ember-source': '~2.18.0'
-            }
-          }
+      },
+      {
+        name: 'ember-release',
+        npm: {
+          devDependencies: {
+            'ember-source': await getChannelURL('release'),
+          },
         },
-        {
-          name: 'ember-release',
-          npm: {
-            devDependencies: {
-              'ember-source': releaseUrl
-            }
-          }
+      },
+      {
+        name: 'ember-beta',
+        npm: {
+          devDependencies: {
+            'ember-source': await getChannelURL('beta'),
+          },
         },
-        {
-          name: 'ember-beta',
-          npm: {
-            devDependencies: {
-              'ember-source': betaUrl
-            }
-          }
+      },
+      {
+        name: 'ember-canary',
+        npm: {
+          devDependencies: {
+            'ember-source': await getChannelURL('canary'),
+          },
         },
-        {
-          name: 'ember-default',
-          npm: {
-            devDependencies: {}
-          }
+      },
+      {
+        name: 'ember-classic',
+        env: {
+          EMBER_OPTIONAL_FEATURES: JSON.stringify({
+            'application-template-wrapper': true,
+            'default-async-observers': false,
+            'template-only-glimmer-components': false,
+          }),
         },
-        {
-          name: 'ember-default-mapbox-gl-0.38',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.38.0'
-            }
-          }
+        npm: {
+          devDependencies: {
+            'ember-source': '~3.28.0',
+          },
+          ember: {
+            edition: 'classic',
+          },
         },
-        {
-          name: 'ember-default-mapbox-gl-0.39',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.39.0'
-            }
-          }
-        },
-        {
-          name: 'ember-default-mapbox-gl-0.40',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.40.0'
-            }
-          }
-        },
-        {
-          name: 'ember-default-mapbox-gl-0.41',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.41.0'
-            }
-          }
-        },
-        {
-          name: 'ember-default-mapbox-gl-0.42',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.42.0'
-            }
-          }
-        },
-        {
-          name: 'ember-default-mapbox-gl-0.43',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.43.0'
-            }
-          }
-        },
-        {
-          name: 'ember-default-mapbox-gl-0.44',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.44.0'
-            }
-          }
-        },
-        {
-          name: 'ember-default-mapbox-gl-0.45',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.45.0'
-            }
-          }
-        },
-        {
-          name: 'ember-default-mapbox-gl-0.46',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.46.0'
-            }
-          }
-        },
-        {
-          name: 'ember-default-mapbox-gl-0.47',
-          npm: {
-            devDependencies: {
-              'mapbox-gl': '^0.47.0'
-            }
-          }
-        }
-      ]
-    };
-  });
+      },
+      embroiderSafe(),
+      embroiderOptimized(),
+    ],
+  };
 };
